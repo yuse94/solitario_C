@@ -158,7 +158,7 @@ void tableroJuego ()
 	numCartaMonton=barajaMezclada[posCartaMonton];
 	paloCartaMonton=paloMezclado[posCartaMonton];
 
-	p("\nBaraja: ");
+	p("\nMonton: ");
 	p("|");
 	p("_");
 
@@ -170,14 +170,10 @@ void tableroJuego ()
 	else
         p("%c%c", numCartaMonton,paloCartaMonton);
 
-	p("_");
-	p("| \n\n\n");
+	p("_|");
 
-    p("\033[1;31m%3c",3);
-    p("%4c",4);
-    p("\033[0m%4c",5);
-    p("%4c\n",6);
 
+	p("\nPila base: ");
 
 	for (i=0; i<4; i++)
 	{
@@ -186,15 +182,15 @@ void tableroJuego ()
 
 		if(i < 2)
         {
-            p("\033[1;31m%c", palos[i]);
+            p("\033[1;31m%c%c", palos[i],i+3);
             p("\033[0m");
         }
         else
-            p("%c", palos[i]);
+            p("%c%c", palos[i],i+3);
 
 		p("_");
 	}
-	p("| \n\n\n");
+	p("| \n\n");
 
 	p("     0    1    2    3    4    5    6\n");
 	p("  ____________________________________\n");
@@ -622,7 +618,7 @@ void gameOver ()
 
 void titulo ()
 {
-    p("\n\n");
+    p("\n");
     p("\033[0m%3c",6);
     p("\033[1;31m%4c",3);
     p("\033[0m%4c",5);
@@ -636,5 +632,5 @@ void titulo ()
     p("\033[1;31m%4c",3);
     p("\033[0m%4c",6);
 
-    p("\n\n");
+    p("\n");
 }
