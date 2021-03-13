@@ -125,8 +125,8 @@ void ocultarCartas()
 	{
 		for (j=0; j<7; j++)
 		{
-			barajaTablero[i][j]=' ';
-			palosTablero[i][j]=' ';
+			barajaTablero[i][j]='_';
+			palosTablero[i][j]='_';
 		}
 	}
 
@@ -241,18 +241,17 @@ void menuJuego ()
             s("%d",&f);
             s("%d",&c);
 
-            while(barajaTablero[f][c]==' ')
-            {
-                s("%d",&f);
-                s("%d",&c);
-            }
-
             p("Ingrese la nueva posicion: ");
             s("%d",&f1);
             s("%d",&c1);
 
-            if(barajaTablero[f1][c1]==' ')
+            if(barajaTablero[f1][c1]=='_')
             {
+                if(barajaTablero[f][c]=='K' && f1 == 0) // K
+                {
+                    moverCartasTablero (f1, c1, f, c);
+                }
+
                 //                                     ROJOS                                                   NEGROS
                 if(((palosTablero[f][c]==3 || palosTablero[f][c]==4) && (palosTablero[f1-1][c1]==5 || palosTablero[f1-1][c1]==6)) || ((palosTablero[f][c]==5 || palosTablero[f][c]==6) && (palosTablero[f1-1][c1]==3 || palosTablero[f1-1][c1]==4)))
                 {
@@ -281,11 +280,6 @@ void menuJuego ()
                         moverCartasTablero (f1, c1, f, c);
                     }
                 }
-
-                if(barajaTablero[f][c]=='K' && f1==0) // K
-                {
-                    moverCartasTablero (f1, c1, f, c);
-                }
             }
             break;
 
@@ -295,7 +289,14 @@ void menuJuego ()
             s("%d", &f1);
             s("%d", &c1);
 
-            if(barajaTablero[f1][c1]==' ')
+            if(numCartaMonton=='K' && f1 == 0) // K
+            {
+                barajaTablero[f1][c1]=numCartaMonton;
+                palosTablero[f1][c1]=paloCartaMonton;
+                quitarCartaMoton();
+            }
+
+            if(barajaTablero[f1][c1]=='_')
             {
                 //                                     ROJOS                                                   NEGROS
                 if(((paloCartaMonton==3 || paloCartaMonton==4) && (palosTablero[f1-1][c1]==5 || palosTablero[f1-1][c1]==6)) || ((paloCartaMonton==5 || paloCartaMonton==6) && (palosTablero[f1-1][c1]==3 || palosTablero[f1-1][c1]==4)))
@@ -336,13 +337,6 @@ void menuJuego ()
                         quitarCartaMoton();
                     }
                 }
-
-                if(numCartaMonton=='K' && f1==0) // K
-                {
-                    barajaTablero[f1][c1]=numCartaMonton;
-                    palosTablero[f1][c1]=paloCartaMonton;
-                    quitarCartaMoton();
-                }
             }
             break;
 
@@ -355,7 +349,7 @@ void menuJuego ()
 			s("%d", &f);
 			s("%d", &c);
 
-			if(barajaTablero[f][c]==cartaPartePosterio && barajaTablero[f+1][c]==' ')
+			if(barajaTablero[f][c]==cartaPartePosterio && barajaTablero[f+1][c]=='_')
 			{
 				if(f==0)
 				{
@@ -407,48 +401,48 @@ void menuJuego ()
                     s("%d",&f);
                     s("%d",&c);
 
-                    if(barajaTablero[f+1][c]==' ')
+                    if(barajaTablero[f+1][c]=='_')
                     {
                         if(barajaTablero[f][c]==49)
                         {
                             palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-                            barajaTablero[f][c]=' ';
-                            palosTablero[f][c]=' ';
+                            barajaTablero[f][c]='_';
+                            palosTablero[f][c]='_';
                         }
 
                         else if(barajaTablero[f][c]-1 == palos[palosTablero[f][c]-3] && barajaTablero[f][c] != 'K')
                         {
                             palos[palosTablero[f][c]-3]=barajaTablero[f][c];    //Si es ♥ entonces palos[0], si es ♦ entoces palos[1]...
-                            barajaTablero[f][c]=' ';
-                            palosTablero[f][c]=' ';
+                            barajaTablero[f][c]='_';
+                            palosTablero[f][c]='_';
                         }
 
                         else if(palos[palosTablero[f][c]-3]=='9' && barajaTablero[f][c]=='0')
                         {
                             palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-                            barajaTablero[f][c]=' ';
-                            palosTablero[f][c]=' ';
+                            barajaTablero[f][c]='_';
+                            palosTablero[f][c]='_';
                         }
 
                         else if(palos[palosTablero[f][c]-3]=='0' && barajaTablero[f][c]=='J')
                         {
                             palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-                            barajaTablero[f][c]=' ';
-                            palosTablero[f][c]=' ';
+                            barajaTablero[f][c]='_';
+                            palosTablero[f][c]='_';
                         }
 
                         else if(palos[palosTablero[f][c]-3]=='J' && barajaTablero[f][c]=='Q')
                         {
                             palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-                            barajaTablero[f][c]=' ';
-                            palosTablero[f][c]=' ';
+                            barajaTablero[f][c]='_';
+                            palosTablero[f][c]='_';
                         }
 
                         else if(palos[palosTablero[f][c]-3]=='Q' && barajaTablero[f][c]=='K')
                         {
                             palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-                            barajaTablero[f][c]=' ';
-                            palosTablero[f][c]=' ';
+                            barajaTablero[f][c]='_';
+                            palosTablero[f][c]='_';
                         }
                     }
                     break;
@@ -554,18 +548,18 @@ void moverCartasTablero (unsigned char f1, unsigned char c1, unsigned char f, un
 {
 	unsigned char n=1;
 	barajaTablero[f1][c1]=barajaTablero[f][c];
-	barajaTablero[f][c]=' ';
+	barajaTablero[f][c]='_';
 	palosTablero[f1][c1]=palosTablero[f][c];
-	palosTablero[f][c]=' ';
+	palosTablero[f][c]='_';
 	do
 	{
 		barajaTablero[f1+n][c1]=barajaTablero[f+n][c];
-		barajaTablero[f+n][c]=' ';
+		barajaTablero[f+n][c]='_';
 		palosTablero[f1+n][c1]=palosTablero[f+n][c];
-		palosTablero[f+n][c]=' ';
+		palosTablero[f+n][c]='_';
 		n++;
 	}
-	while(barajaTablero[f+n][c]!=' ');
+	while(barajaTablero[f+n][c]!='_');
 }
 
 void gameOver ()
