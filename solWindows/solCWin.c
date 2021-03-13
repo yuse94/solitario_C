@@ -47,16 +47,20 @@ void moverCartasTablero ( unsigned char f1,  unsigned char c1, unsigned char f, 
 
 void gameOver ();
 
+void titulo ();
+
 int main()
 {
-	system("color 70");
+	system("color 07");
 
-	p("\n\n%3c%4c%4c%4c Solitario%2c%4c%4c%4c\n\n",3,4,5,6,6,5,4,3);
+    titulo ();
+
 	musicaJuegoNuevo();
-	p("Presione cualquier tecla para empezar\n\n");
 
-	barajar ();
+    barajar ();
 	ocultarCartas();
+
+	p("Presione cualquier tecla para empezar\n\n");
 	getch();
 
 	juego();
@@ -149,7 +153,7 @@ void tableroJuego ()
 
 	system("cls");
 
-	p("\n\n%3c%4c%4c%4c Solitario%2c%4c%4c%4c\n\n",3,4,5,6,6,5,4,3);
+	titulo ();
 
 	numCartaMonton=barajaMezclada[posCartaMonton];
 	paloCartaMonton=paloMezclado[posCartaMonton];
@@ -157,16 +161,37 @@ void tableroJuego ()
 	p("\nBaraja: ");
 	p("|");
 	p("_");
-	p("%c%c", numCartaMonton,paloCartaMonton);
+
+	if(paloCartaMonton == 3 || paloCartaMonton == 4)
+    {
+        p("\033[1;31m%c%c", numCartaMonton,paloCartaMonton);
+        p("\033[0m");
+	}
+	else
+        p("%c%c", numCartaMonton,paloCartaMonton);
+
 	p("_");
 	p("| \n\n\n");
 
-	p("%3c%4c%4c%4c\n",3,4,5,6);
+    p("\033[1;31m%3c",3);
+    p("%4c",4);
+    p("\033[0m%4c",5);
+    p("%4c\n",6);
+
+
 	for (i=0; i<4; i++)
 	{
 		p("|");
 		p("_");
-		p("%c", palos[i]);
+
+		if(i < 2)
+        {
+            p("\033[1;31m%c", palos[i]);
+            p("\033[0m");
+        }
+        else
+            p("%c", palos[i]);
+
 		p("_");
 	}
 	p("| \n\n\n");
@@ -182,7 +207,15 @@ void tableroJuego ()
 		{
 			p("|");
 			p("_");
-			p("%c%c",barajaTablero[i][j],palosTablero[i][j]);
+
+            if(palosTablero[i][j] == 3 || palosTablero[i][j] == 4)
+            {
+                p("\033[1;31m%c%c", barajaTablero[i][j],palosTablero[i][j]);
+                p("\033[0m");
+            }
+            else
+                p("%c%c",barajaTablero[i][j],palosTablero[i][j]);
+
 			p("_");
 		}
 		p("|%d\n",i);
@@ -585,4 +618,23 @@ void gameOver ()
 		}
 	}
 	while(conta<7);
+}
+
+void titulo ()
+{
+    p("\n\n");
+    p("\033[0m%3c",6);
+    p("\033[1;31m%4c",3);
+    p("\033[0m%4c",5);
+    p("\033[1;31m%4c",4);
+    p("\033[0m");
+
+	p("  Solitario");
+
+    p("\033[1;31m%3c",4);
+    p("\033[0m%4c",5);
+    p("\033[1;31m%4c",3);
+    p("\033[0m%4c",6);
+
+    p("\n\n");
 }
