@@ -32,9 +32,11 @@ unsigned char paloCartaMonton;
 unsigned int posCartaMonton=0;
 unsigned int cantidadCartasMonton = 24;
 
+unsigned char salirDelJuego = 'n';
+
 //FUNCIONES
 void musicaJuegoNuevo();
-
+void titulo ();
 void barajar ();
 void ocultarCartas();
 void tableroJuego ();
@@ -46,8 +48,6 @@ void quitarCartaMoton();
 void moverCartasTablero ( unsigned char f1,  unsigned char c1, unsigned char f, unsigned char c );
 
 void gameOver ();
-
-void titulo ();
 
 int main()
 {
@@ -66,7 +66,7 @@ int main()
 	juego();
 	gameOver ();
 
-	p("FELICIDADES.\nPresione cualquier tecla para salir\n\n");
+	p("ADIOS.\nPresione cualquier tecla para salir\n\n");
 	getch();
 
 	return 0;
@@ -158,7 +158,7 @@ void tableroJuego ()
 	numCartaMonton=barajaMezclada[posCartaMonton];
 	paloCartaMonton=paloMezclado[posCartaMonton];
 
-	p("\nBaraja: ");
+	p("\nMonton: ");
 	p("|");
 	p("_");
 
@@ -170,14 +170,10 @@ void tableroJuego ()
 	else
         p("%c%c", numCartaMonton,paloCartaMonton);
 
-	p("_");
-	p("| \n\n\n");
+	p("_|");
 
-    p("\033[1;31m%3c",3);
-    p("%4c",4);
-    p("\033[0m%4c",5);
-    p("%4c\n",6);
 
+	p("\nPila base: ");
 
 	for (i=0; i<4; i++)
 	{
@@ -186,15 +182,15 @@ void tableroJuego ()
 
 		if(i < 2)
         {
-            p("\033[1;31m%c", palos[i]);
+            p("\033[1;31m%c%c", palos[i],i+3);
             p("\033[0m");
         }
         else
-            p("%c", palos[i]);
+            p("%c%c", palos[i],i+3);
 
 		p("_");
 	}
-	p("| \n\n\n");
+	p("| \n\n");
 
 	p("     0    1    2    3    4    5    6\n");
 	p("  ____________________________________\n");
@@ -229,240 +225,133 @@ void menuJuego ()
 	Beep (300,100);
 
 	p("\n8**********MENU**********8\n\n");
-	p("1. Selecione una carta\n2. Desocultar carta\n3. Cambiar carta del monton\n4. Salir\n\n");
+	p("1. Morver cartas dentro del tablero\n");
+	p("2. Morver carta del monton al tablero\n");
+    p("3. Cambiar carta del monton\n");
+    p("4. Desocultar carta del tablero\n");
+    p("5. Enviar carta a la pila base\n");
+    p("6. Salir\n\n");
 	p("Opcion: ");
 	s("%d", &opcion);
 
 	switch (opcion)
 	{
-		case 1:
-			p("\n1. La carta del monton\n2. Una carta del tablero\n");
-			p("Opcion: ");
-			s("%d", &opcion);
+        case 1:
+            p("Ingrese la posicion actual 'fila columna': ");
+            s("%d",&f);
+            s("%d",&c);
 
-			switch (opcion)
-			{
-				case 1:
-					p("\n1. Mover la carta a:\n2. Enviar carta:\n");
-					p("Opcion: ");
-					s("%d", &opcion);
+            while(barajaTablero[f][c]==' ')
+            {
+                s("%d",&f);
+                s("%d",&c);
+            }
 
-					switch (opcion)
-					{
-						case 1:
-							p("\nIngrese la posicion a la que desea mover 'fila columna': ");
+            p("Ingrese la nueva posicion: ");
+            s("%d",&f1);
+            s("%d",&c1);
 
-							s("%d", &f1);
-							s("%d", &c1);
+            if(barajaTablero[f1][c1]==' ')
+            {
+                //                                     ROJOS                                                   NEGROS
+                if(((palosTablero[f][c]==3 || palosTablero[f][c]==4) && (palosTablero[f1-1][c1]==5 || palosTablero[f1-1][c1]==6)) || ((palosTablero[f][c]==5 || palosTablero[f][c]==6) && (palosTablero[f1-1][c1]==3 || palosTablero[f1-1][c1]==4)))
+                {
+                    if(barajaTablero[f1-1][c1]==barajaTablero[f][c]+1 && barajaTablero[f][c]!='J') // 1 al 8
+                    {
+                        moverCartasTablero(f1, c1, f, c);
+                    }
 
-							if(barajaTablero[f1][c1]==' ')
-							{
-								//                                     ROJOS                                                   NEGROS
-								if(((paloCartaMonton==3 || paloCartaMonton==4) && (palosTablero[f1-1][c1]==5 || palosTablero[f1-1][c1]==6)) || ((paloCartaMonton==5 || paloCartaMonton==6) && (palosTablero[f1-1][c1]==3 || palosTablero[f1-1][c1]==4)))
-								{
+                    else if(barajaTablero[f][c]=='9' && barajaTablero[f1-1][c1]=='0') //9
+                    {
+                        moverCartasTablero (f1, c1, f, c);
+                    }
 
-									if(barajaTablero[f1-1][c1]==numCartaMonton+1 && numCartaMonton!='J')  // 1 al 8
-									{
-										barajaTablero[f1][c1]=numCartaMonton;
-										palosTablero[f1][c1]=paloCartaMonton;
-										quitarCartaMoton();
-									}
+                    else if(barajaTablero[f][c]=='0' && barajaTablero[f1-1][c1]=='J') //10 == 0
+                    {
+                        moverCartasTablero (f1, c1, f, c);
+                    }
 
-									else if(numCartaMonton=='9' &&  barajaTablero[f1-1][c1]=='0') //9
-									{
-										barajaTablero[f1][c1]=numCartaMonton;
-										palosTablero[f1][c1]=paloCartaMonton;
-										quitarCartaMoton();
-									}
+                    else if(barajaTablero[f][c]=='J' && barajaTablero[f1-1][c1]=='Q') //J
+                    {
+                        moverCartasTablero (f1, c1, f, c);
+                    }
 
-									else if(numCartaMonton=='0' &&  barajaTablero[f1-1][c1]=='J') //10 == 0
-									{
-										barajaTablero[f1][c1]=numCartaMonton;
-										palosTablero[f1][c1]=paloCartaMonton;
-										quitarCartaMoton();
-									}
+                    else if(barajaTablero[f][c]=='Q' && barajaTablero[f1-1][c1]=='K') //Q
+                    {
+                        moverCartasTablero (f1, c1, f, c);
+                    }
+                }
 
-									else if(numCartaMonton=='J' &&  barajaTablero[f1-1][c1]=='Q') //J
-									{
-										barajaTablero[f1][c1]=numCartaMonton;
-										palosTablero[f1][c1]=paloCartaMonton;
-										quitarCartaMoton();
-									}
-
-									else if(numCartaMonton=='Q' &&  barajaTablero[f1-1][c1]=='K') //Q
-									{
-										barajaTablero[f1][c1]=numCartaMonton;
-										palosTablero[f1][c1]=paloCartaMonton;
-										quitarCartaMoton();
-									}
-								}
-
-								if(numCartaMonton=='K' && f1==0) // K
-								{
-									barajaTablero[f1][c1]=numCartaMonton;
-									palosTablero[f1][c1]=paloCartaMonton;
-									quitarCartaMoton();
-								}
-							}
-							break;
-
-						case 2:
-							if(numCartaMonton==49)
-							{
-								palos[paloCartaMonton-3]=numCartaMonton;
-								quitarCartaMoton();
-							}
-
-							else if(numCartaMonton-1 == palos[paloCartaMonton-3] && numCartaMonton!='K')
-							{
-								palos[paloCartaMonton-3]=numCartaMonton;    //Si es ♥ entonces palos[0], si es ♦ entoces palos[1]...
-								quitarCartaMoton();
-							}
-
-							else if(palos[paloCartaMonton-3]=='9' && numCartaMonton=='0')
-							{
-								palos[paloCartaMonton-3]=numCartaMonton;
-								quitarCartaMoton();
-							}
-
-							else if(palos[paloCartaMonton-3]=='0' && numCartaMonton=='J')
-							{
-								palos[paloCartaMonton-3]=numCartaMonton;
-								quitarCartaMoton();
-							}
-
-							else if(palos[paloCartaMonton-3]=='J' && numCartaMonton=='Q')
-							{
-								palos[paloCartaMonton-3]=numCartaMonton;
-								quitarCartaMoton();
-							}
-
-							else if(palos[paloCartaMonton-3]=='Q' && numCartaMonton=='K')
-							{
-								palos[paloCartaMonton-3]=numCartaMonton;
-								quitarCartaMoton();
-							}
-							break;
-					}
-					break;
-
-				case 2:
-					p("\n1. Mover la carta a:\n2. Enviar  a:\n");
-					p("Opcion: ");
-					s("%d", &opcion);
-
-					switch (opcion)
-					{
-						case 1:
-							p("\nIngrese la posicion de la carta 'fila columna': ");
-							s("%d",&f);
-							s("%d",&c);
-
-							while(barajaTablero[f][c]==' ')
-							{
-								s("%d",&f);
-								s("%d",&c);
-							}
-
-							p("\nIngrese la nueva posicion: ");
-							s("%d",&f1);
-							s("%d",&c1);
-
-							if(barajaTablero[f1][c1]==' ')
-							{
-								//                                     ROJOS                                                   NEGROS
-								if(((palosTablero[f][c]==3 || palosTablero[f][c]==4) && (palosTablero[f1-1][c1]==5 || palosTablero[f1-1][c1]==6)) || ((palosTablero[f][c]==5 || palosTablero[f][c]==6) && (palosTablero[f1-1][c1]==3 || palosTablero[f1-1][c1]==4)))
-								{
-									if(barajaTablero[f1-1][c1]==barajaTablero[f][c]+1 && barajaTablero[f][c]!='J') // 1 al 8
-									{
-										moverCartasTablero(f1, c1, f, c);
-									}
-
-									else if(barajaTablero[f][c]=='9' && barajaTablero[f1-1][c1]=='0') //9
-									{
-										moverCartasTablero (f1, c1, f, c);
-									}
-
-									else if(barajaTablero[f][c]=='0' && barajaTablero[f1-1][c1]=='J') //10 == 0
-									{
-										moverCartasTablero (f1, c1, f, c);
-									}
-
-									else if(barajaTablero[f][c]=='J' && barajaTablero[f1-1][c1]=='Q') //J
-									{
-										moverCartasTablero (f1, c1, f, c);
-									}
-
-									else if(barajaTablero[f][c]=='Q' && barajaTablero[f1-1][c1]=='K') //Q
-									{
-										moverCartasTablero (f1, c1, f, c);
-									}
-								}
-
-								if(barajaTablero[f][c]=='K' && f1==0) // K
-								{
-									moverCartasTablero (f1, c1, f, c);
-								}
-							}
-							break;
-
-						case 2:
-							p("\nPosicion 'fila columna': ");
-							s("%d",&f);
-							s("%d",&c);
-
-							if(barajaTablero[f+1][c]==' ')
-							{
-								if(barajaTablero[f][c]==49)
-								{
-									palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-									barajaTablero[f][c]=' ';
-									palosTablero[f][c]=' ';
-								}
-
-								else if(barajaTablero[f][c]-1 == palos[palosTablero[f][c]-3] && barajaTablero[f][c] != 'K')
-								{
-									palos[palosTablero[f][c]-3]=barajaTablero[f][c];    //Si es ♥ entonces palos[0], si es ♦ entoces palos[1]...
-									barajaTablero[f][c]=' ';
-									palosTablero[f][c]=' ';
-								}
-
-								else if(palos[palosTablero[f][c]-3]=='9' && barajaTablero[f][c]=='0')
-								{
-									palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-									barajaTablero[f][c]=' ';
-									palosTablero[f][c]=' ';
-								}
-
-								else if(palos[palosTablero[f][c]-3]=='0' && barajaTablero[f][c]=='J')
-								{
-									palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-									barajaTablero[f][c]=' ';
-									palosTablero[f][c]=' ';
-								}
-
-								else if(palos[palosTablero[f][c]-3]=='J' && barajaTablero[f][c]=='Q')
-								{
-									palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-									barajaTablero[f][c]=' ';
-									palosTablero[f][c]=' ';
-								}
-
-								else if(palos[palosTablero[f][c]-3]=='Q' && barajaTablero[f][c]=='K')
-								{
-									palos[palosTablero[f][c]-3]=barajaTablero[f][c];
-									barajaTablero[f][c]=' ';
-									palosTablero[f][c]=' ';
-								}
-							}
-							break;
-					}
-					break;
-			}
-			break;
+                if(barajaTablero[f][c]=='K' && f1==0) // K
+                {
+                    moverCartasTablero (f1, c1, f, c);
+                }
+            }
+            break;
 
 		case 2:
-			p("\nPosicion 'fila columna': ");
+            p("Ingrese la posicion 'fila columna': ");
+
+            s("%d", &f1);
+            s("%d", &c1);
+
+            if(barajaTablero[f1][c1]==' ')
+            {
+                //                                     ROJOS                                                   NEGROS
+                if(((paloCartaMonton==3 || paloCartaMonton==4) && (palosTablero[f1-1][c1]==5 || palosTablero[f1-1][c1]==6)) || ((paloCartaMonton==5 || paloCartaMonton==6) && (palosTablero[f1-1][c1]==3 || palosTablero[f1-1][c1]==4)))
+                {
+
+                    if(barajaTablero[f1-1][c1]==numCartaMonton+1 && numCartaMonton!='J')  // 1 al 8
+                    {
+                        barajaTablero[f1][c1]=numCartaMonton;
+                        palosTablero[f1][c1]=paloCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(numCartaMonton=='9' &&  barajaTablero[f1-1][c1]=='0') //9
+                    {
+                        barajaTablero[f1][c1]=numCartaMonton;
+                        palosTablero[f1][c1]=paloCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(numCartaMonton=='0' &&  barajaTablero[f1-1][c1]=='J') //10 == 0
+                    {
+                        barajaTablero[f1][c1]=numCartaMonton;
+                        palosTablero[f1][c1]=paloCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(numCartaMonton=='J' &&  barajaTablero[f1-1][c1]=='Q') //J
+                    {
+                        barajaTablero[f1][c1]=numCartaMonton;
+                        palosTablero[f1][c1]=paloCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(numCartaMonton=='Q' &&  barajaTablero[f1-1][c1]=='K') //Q
+                    {
+                        barajaTablero[f1][c1]=numCartaMonton;
+                        palosTablero[f1][c1]=paloCartaMonton;
+                        quitarCartaMoton();
+                    }
+                }
+
+                if(numCartaMonton=='K' && f1==0) // K
+                {
+                    barajaTablero[f1][c1]=numCartaMonton;
+                    palosTablero[f1][c1]=paloCartaMonton;
+                    quitarCartaMoton();
+                }
+            }
+            break;
+
+        case 3:
+            cambiarCartaMazo();
+            break;
+
+        case 4:
+			p("Posicion 'fila columna': ");
 			s("%d", &f);
 			s("%d", &c);
 
@@ -506,26 +395,118 @@ void menuJuego ()
 			}
 			break;
 
-		case 3:
-			cambiarCartaMazo();
-			break;
+        case 5:
+            p("1. Del tablero\n2. Del monton\n");
+			p("Respuesta: ");
+			s("%d", &opcion);
 
-		case 4:
-			p("\nDesea guardar el juego:\n1. Si\n2. No\n");
+			switch(opcion)
+			{
+                case 1:
+                    p("Posicion 'fila columna': ");
+                    s("%d",&f);
+                    s("%d",&c);
+
+                    if(barajaTablero[f+1][c]==' ')
+                    {
+                        if(barajaTablero[f][c]==49)
+                        {
+                            palos[palosTablero[f][c]-3]=barajaTablero[f][c];
+                            barajaTablero[f][c]=' ';
+                            palosTablero[f][c]=' ';
+                        }
+
+                        else if(barajaTablero[f][c]-1 == palos[palosTablero[f][c]-3] && barajaTablero[f][c] != 'K')
+                        {
+                            palos[palosTablero[f][c]-3]=barajaTablero[f][c];    //Si es ♥ entonces palos[0], si es ♦ entoces palos[1]...
+                            barajaTablero[f][c]=' ';
+                            palosTablero[f][c]=' ';
+                        }
+
+                        else if(palos[palosTablero[f][c]-3]=='9' && barajaTablero[f][c]=='0')
+                        {
+                            palos[palosTablero[f][c]-3]=barajaTablero[f][c];
+                            barajaTablero[f][c]=' ';
+                            palosTablero[f][c]=' ';
+                        }
+
+                        else if(palos[palosTablero[f][c]-3]=='0' && barajaTablero[f][c]=='J')
+                        {
+                            palos[palosTablero[f][c]-3]=barajaTablero[f][c];
+                            barajaTablero[f][c]=' ';
+                            palosTablero[f][c]=' ';
+                        }
+
+                        else if(palos[palosTablero[f][c]-3]=='J' && barajaTablero[f][c]=='Q')
+                        {
+                            palos[palosTablero[f][c]-3]=barajaTablero[f][c];
+                            barajaTablero[f][c]=' ';
+                            palosTablero[f][c]=' ';
+                        }
+
+                        else if(palos[palosTablero[f][c]-3]=='Q' && barajaTablero[f][c]=='K')
+                        {
+                            palos[palosTablero[f][c]-3]=barajaTablero[f][c];
+                            barajaTablero[f][c]=' ';
+                            palosTablero[f][c]=' ';
+                        }
+                    }
+                    break;
+
+                case 2:
+                    if(numCartaMonton==49)
+                    {
+                        palos[paloCartaMonton-3]=numCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(numCartaMonton-1 == palos[paloCartaMonton-3] && numCartaMonton!='K')
+                    {
+                        palos[paloCartaMonton-3]=numCartaMonton;    //Si es ♥ entonces palos[0], si es ♦ entoces palos[1]...
+                        quitarCartaMoton();
+                    }
+
+                    else if(palos[paloCartaMonton-3]=='9' && numCartaMonton=='0')
+                    {
+                        palos[paloCartaMonton-3]=numCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(palos[paloCartaMonton-3]=='0' && numCartaMonton=='J')
+                    {
+                        palos[paloCartaMonton-3]=numCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(palos[paloCartaMonton-3]=='J' && numCartaMonton=='Q')
+                    {
+                        palos[paloCartaMonton-3]=numCartaMonton;
+                        quitarCartaMoton();
+                    }
+
+                    else if(palos[paloCartaMonton-3]=='Q' && numCartaMonton=='K')
+                    {
+                        palos[paloCartaMonton-3]=numCartaMonton;
+                        quitarCartaMoton();
+                    }
+                    break;
+            }
+            break;
+
+        case 6:
+			p("\nDesea salir del juego?:\n1. Si\n2. No\n");
 			p("Respuesta: ");
 			s("%d", &opcion);
 
 			switch(opcion)
 			{
 				case 1:
-					getch();
+					salirDelJuego = 's';
 					break;
 
 				case 2:
-					getch();
 					break;
 			}
-			break;
 	}
 }
 
@@ -536,7 +517,7 @@ void juego ()
 		tableroJuego();
 		menuJuego();
 	}
-	while (palos[0]!='K' || palos[1]!='K' || palos[2]!='K' || palos[3]!='K');
+	while ((palos[0]!='K' || palos[1]!='K' || palos[2]!='K' || palos[3]!='K') && salirDelJuego == 'n');
 }
 
 unsigned char cambiarCartaMazo()
@@ -594,35 +575,38 @@ void gameOver ()
 	unsigned char conta=0;
 	unsigned char i;
 
-	system("color 7C");
+	system("cls");
 
-	do
-	{
-		for(i = 3; i < 7; i++)
-		{
-			system("cls");
+	if(salirDelJuego=='n')
+    {
+        do
+        {
+            for(i = 3; i < 7; i++)
+            {
+                system("cls");
 
-			p("\n\n");
-			p("     %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", i, i,i, i,i, i,i, i,i, i,i, i,i, i,i, i);
-			p("     %c  Has ganado  %c\n", i, i);
-			p("     %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n\n", i, i,i, i,i, i,i, i,i, i,i, i,i, i,i, i);
+                p("\n\n");
+                p("     %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", i, i,i, i,i, i,i, i,i, i,i, i,i, i,i, i);
+                p("     %c  Has ganado  %c\n", i, i);
+                p("     %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n\n", i, i,i, i,i, i,i, i,i, i,i, i,i, i,i, i);
 
-			if(i < 5 ){system("color 7C");}
-			else{system("color 70");}
+                if(i < 5 ){system("color 7C");}
+                else{system("color 70");}
 
-			if(conta<7)
-			{
-				Beep (notas[conta],tiempo[conta]);
-			}
-			conta++;
-		}
+                if(conta<7)
+                {
+                    Beep (notas[conta],tiempo[conta]);
+                }
+                conta++;
+            }
+        }
+        while(conta<7);
 	}
-	while(conta<7);
 }
 
 void titulo ()
 {
-    p("\n\n");
+    p("\n");
     p("\033[0m%3c",6);
     p("\033[1;31m%4c",3);
     p("\033[0m%4c",5);
@@ -636,5 +620,5 @@ void titulo ()
     p("\033[1;31m%4c",3);
     p("\033[0m%4c",6);
 
-    p("\n\n");
+    p("\n");
 }
