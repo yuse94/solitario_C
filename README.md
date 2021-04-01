@@ -21,7 +21,9 @@ Las opciones que se usan para jugar, mediante consola son:
 5. Enviar carta a la pila base
 > 1 Del tablero
 > > Posicion 'fila columna':
-> 2 Del monton
+
+	> 2 Del monton
+
 6. Salir
 > 1 Si
 > 2 No
