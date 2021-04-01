@@ -8,6 +8,7 @@ Descarga las librerías necesarias y compila el código en tu pc.
 
 ### Cómo usar
 ![](https://i.imgur.com/VGaqqIw.jpg)
+
 Las opciones que se usan para jugar, mediante consola son:
 1. Morver cartas dentro del tablero
 > Ingrese la posicion actual 'fila columna':
