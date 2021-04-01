@@ -1,3 +1,4 @@
+# Solitario en C
 ![](https://i.imgur.com/PeAm0fo.jpg)
 ### Descripción
 Solitario realizado en la consola de C.
